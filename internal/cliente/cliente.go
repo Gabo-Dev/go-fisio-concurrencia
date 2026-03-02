@@ -1,46 +1,47 @@
-
 package cliente
 import (
 	"fmt"
+	"math/rand"
 	"time"
-	"github.com/Gabo-Dev/go-fisio-concurrencia/internal/centro"
 )
-
 type TipoCliente int
-
 const (
 	Masaje TipoCliente = iota
 	Rehabilitacion
 )
-
 func (tc TipoCliente) String() string {
-	return [...]string{"Masaje", "Rehabilitacion"}[tc]
+	return [...]string{"Masaje", "Rehabilitación"}[tc]
 }
-
-type Cliente struct{
-	ID int
-	Tipo TipoCliente
+type Cliente struct {
+	ID       int
+	Tipo     TipoCliente
+	Assigned chan string
 }
-
-func (cli *Cliente) Vivir(c *centro.Centro){
-	defer c.Wg.Done()
-
-	fmt.Printf(">> Cliente %d ha llegado para una sesión de %s.\n", cli.ID, cli.Tipo)
-
-	fmt.Printf(" ...Cliente  %d está en la cola, esperando su turno para ser atendido por un empleado.\n",cli.ID)
-	select {
-		case <-c.MasajistaDisponible:
-  		fmt.Printf("Masajista: Atendiendo al cliente %d\n", cli.ID)
-			time.Sleep(2 * time.Second) // Simulamos que está un rato en el centro
-			// liberamos canal del masajista
-			c.MasajistaDisponible <- struct{}{}
-			fmt.Printf("   <-- Cliente %d TERMINÓ su masaje y LIBERA al masajista.\n", cli.ID)
-		case <-c.FisioDisponible:
-			fmt.Printf("Fisio: Atendiendo al cliente %d\n", cli.ID)
-			time.Sleep(2 * time.Second)
-			// liberamos canal del Fisio
-			c.FisioDisponible <- struct{}{}
-			fmt.Printf("   <-- Cliente %d TERMINÓ su masaje y LIBERA al FISIOTERAPEUTA.\n", cli.ID)
+type CenterService interface {
+	WgDone()
+	SendToMasajeQueue(cli *Cliente)
+	SendToRehabilitacionQueue(cli *Cliente)
+	ReleaseFisio()
+	ReleaseMasajista()
+}
+func (cli *Cliente) Vivir(s CenterService) {
+	defer s.WgDone()
+	fmt.Printf(">> Cliente %d (%s) ha llegado.\n", cli.ID, cli.Tipo)
+	if cli.Tipo == Masaje {
+		s.SendToMasajeQueue(cli)
+	} else {
+		s.SendToRehabilitacionQueue(cli)
 	}
-	fmt.Printf("<< Cliente %d se ha ido del centro.\n", cli.ID)
+	empleadoAsignado := <-cli.Assigned
+	fmt.Printf("   --> Cliente %d (%s) fue asignado a %s.\n", cli.ID, cli.Tipo, empleadoAsignado)
+	tiempoSesion := time.Duration(rand.Intn(3)+2) * time.Second
+	fmt.Printf("      ... Cliente %d en sesión con %s por %v ...\n", cli.ID, empleadoAsignado, tiempoSesion)
+	time.Sleep(tiempoSesion)
+	if empleadoAsignado == "FISIOTERAPEUTA" {
+		s.ReleaseFisio()
+	} else {
+		s.ReleaseMasajista()
+	}
+	fmt.Printf("   <-- Cliente %d liberó a %s.\n", cli.ID, empleadoAsignado)
+	fmt.Printf("<< Cliente %d (%s) se ha ido del centro.\n", cli.ID, cli.Tipo)
 }
