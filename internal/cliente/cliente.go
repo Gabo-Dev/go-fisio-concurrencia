@@ -27,6 +27,14 @@ func (cli *Cliente) Vivir(c *centro.Centro){
 
 	fmt.Printf(">> Cliente %d ha llegado para una sesión de %s.\n", cli.ID, cli.Tipo)
 
-	time.Sleep(1 * time.Second) // Simulamos que está un rato en el centro
-	fmt.Printf("<< Cliente %d se ha ido.\n", cli.ID)
+	fmt.Printf(" ...Cliente  %d está en la cola, esperando un masajista...\n",cli.ID)
+	<-c.MasajistaDisponible
+  fmt.Printf("Masajista: Atendiendo al cliente %d\n", cli.ID)
+
+	time.Sleep(2 * time.Second) // Simulamos que está un rato en el centro
+	
+	// liberamos canal
+	c.MasajistaDisponible <- struct{}{}
+	fmt.Printf("   <-- Cliente %d TERMINÓ su masaje y LIBERA al masajista.\n", cli.ID)
+	fmt.Printf("<< Cliente %d se ha ido del centro.\n", cli.ID)
 }
