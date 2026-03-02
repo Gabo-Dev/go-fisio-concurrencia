@@ -1,33 +1,26 @@
- Go-Fisio-Concurrencia
-![Go Version](https://img.shields.io/badge/Go-1.22%2B-blue.svg)
-![License](https://img.shields.io/badge/License-MIT-green.svg)
-![Status](https://img.shields.io/badge/Status-En%20Desarrollo-orange.svg)
-Simulación de un centro de fisioterapia desarrollada en Go para explorar e implementar patrones de concurrencia avanzados.
----
- 1. Descripción del Proyecto
-Este proyecto implementa una simulación de un centro de fisioterapia para modelar y resolver un problema clásico de concurrencia. El enfoque principal es la utilización de características idiomáticas de Go, como **goroutines** y **canales**, para gestionar la sincronización y el estado de recursos compartidos.
- Diagrama de Flujo del Cliente
-graph TD
-    A[Cliente Llega] --> B{Evalúa tipo de sesión};
-    B -->|Masaje| C[Solicita Masajista o Fisio];
-    B -->|Rehabilitación| D[Solicita Fisio (con prioridad)];
-    C --> E[Recibe Sesión];
-    D --> E;
-    E --> F[Solicita Vestuario];
-    F --> G[Usa Vestuario];
-    G --> H[Cliente se va del centro];
- 2. Conceptos de Go Implementados
-*   **Goroutines:** Para modelar cada cliente como un actor concurrente e independiente.
-*   **Channels:** Como mecanismo primario para:
-    *   Gestionar el acceso a recursos (semáforos).
-    *   Garantizar la exclusión mutua en zonas críticas (mutex).
-    *   Sincronizar el flujo entre diferentes goroutines.
-*   **`sync.WaitGroup`:** Para orquestar una finalización ordenada de la simulación.
-*   **Estructura de Proyecto Idiomática:** Layout estándar `cmd/` e `internal/` para una clara separación de responsabilidades.
-<details>
-<summary><strong>Filosofía y Entorno de Desarrollo (Haz clic para expandir)</strong></summary>
-Este proyecto es también un ejercicio práctico enfocado en la profundización de conceptos de ingeniería de software y el dominio de un entorno de desarrollo profesional y minimalista. El proceso sigue un modelo de mentoría guiado por IA para enfatizar el entendimiento de los fundamentos.
-*   **Lenguaje:** Go
-*   **Editor:** Neovim (Gentleman Dots)
-*   **Shell:** Fish Shell
-</details>
+ Go-Fisio-Concurrencia 
+**Go-Fisio-Concurrencia** es una simulación de escritorio para explorar y dominar patrones de concurrencia avanzados en Go. El proyecto se enfoca en el uso de canales y goroutines sobre mecanismos de bloqueo tradicionales.
+ El Desafío 🎯
+*   **Simulación Concurrente**: Modela un centro de fisioterapia con múltiples clientes y empleados interactuando simultáneamente.
+*   **Gestión de Recursos**: Implementa semáforos y mutex usando canales para controlar el acceso a empleados y vestuarios.
+*   **Lógica de Prioridad**: Diseña un sistema donde ciertos clientes (Rehabilitación) tienen prioridad de acceso a los recursos.
+*   **Sincronización Compleja**: Asegura que los empleados queden bloqueados hasta que sus clientes completen todo el ciclo (sesión + vestuario).
+ 🛠️ Stack de Desarrollo y Filosofía
+Este proyecto es un ejercicio práctico para dominar herramientas profesionales y conceptos de bajo nivel, siguiendo un modelo de mentoría guiado por IA (OpenCode).
+*   **Lenguaje**: [Go](https://go.dev/)
+*   **Editor**: [Neovim](https://neovim.io/) (configurado con [Gentleman Dots](https://github.com/Gentleman-Programming/Gentleman-dotfiles))
+*   **Shell**: [Fish Shell](https://fishshell.com/)
+*   **Control de Versiones**: [Git](https://git-scm.com/)
+ 🏗️ Arquitectura y Conceptos de Go
+El proyecto sigue principios de diseño limpio, aplicando conceptos idiomáticos de Go.
+src/
+├── cmd/
+│   └── fisio-center/   # Proceso principal de la simulación (main.go)
+└── internal/
+    ├── centro/         # Lógica de negocio y sincronización del centro
+    └── cliente/        # Definición y ciclo de vida de los clientes
+*   **Goroutines**: Para modelar cada cliente como un actor concurrente e independiente.
+*   **Channels**: Como mecanismo primario para sincronización, gestión de recursos y comunicación entre goroutines.
+*   **`sync.WaitGroup`**: Para orquestar una finalización ordenada de la simulación.
+*   **Estructura de Paquetes**: Layout `cmd/` e `internal/` ggdGpara una clara separación de responsabilidades.
+
