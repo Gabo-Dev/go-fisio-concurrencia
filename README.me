@@ -1,0 +1,20 @@
+ Go-Fisio-Concurrencia
+ 1. Resumen
+Este repositorio contiene una simulación de un centro de fisioterapia desarrollada en Go. El objetivo principal del proyecto es explorar e implementar patrones de concurrencia avanzados utilizando las características idiomáticas del lenguaje, como goroutines y canales, para gestionar el estado y la sincronización de recursos compartidos.
+ 2. Descripción del Proyecto
+La aplicación migra un problema conceptual de concurrencia, originalmente diseñado para un curso universitario en Java, a una solución idiomática en Go. El enfoque se centra en el uso de canales para la gestión de la sincronización, en contraposición a los mecanismos de bloqueo tradicionales (ej. `synchronized`, `wait`, `notify`) comunes en otros lenguajes.
+El problema simula un centro con los siguientes componentes:
+*   **Actores:** Fisioterapeuta, Masajista, Clientes de Rehabilitación y Clientes de Masaje.
+*   **Recursos Compartidos:** Empleados (Fisioterapeuta y Masajista) y un único Vestuario.
+*   **Reglas de Sincronización:** Se deben gestionar las colas de espera, la prioridad de acceso a los recursos (clientes de rehabilitación tienen prioridad) y el bloqueo de recursos compuestos (un empleado permanece ocupado hasta que su cliente libera el vestuario).
+ 3. Filosofía y Entorno de Desarrollo
+Este proyecto es un ejercicio práctico enfocado en la profundización de conceptos de ingeniería de software y el dominio de un entorno de desarrollo profesional.
+El proceso sigue un modelo de mentoría, donde un agente de IA actúa como Arquitecto de Software Senior para guiar el diseño y las buenas prácticas, promoviendo un entendimiento fundamental de las tecnologías implicadas.
+*   **Lenguaje:** Go
+*   **Editor:** Neovim (con la configuración Gentleman Dots)
+*   **Shell:** Fish Shell
+ 4. Conceptos de Go Implementados
+*   **Goroutines:** Utilizadas para modelar cada cliente como un proceso concurrente e independiente.
+*   **Channels:** Empleados como mecanismo primario para la sincronización, sirviendo como semáforos para la gestión de recursos y como mutex para garantizar la exclusión mutua.
+*   **`sync.WaitGroup`:** Para orquestar la finalización ordenada de la simulación, asegurando que el programa principal espere la conclusión de todas las goroutines.
+*   **Estructura de Proyecto:** Se adhiere al layout estándar de Go, separando el código de la aplicación (`internal/`) del código de arranque (`cmd/`).
